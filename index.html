@@ -19,8 +19,7 @@
         }
 
         #image {
-            max-width: 100%;
-            max-height: 100%;
+            max-width: 100%; /* Adjust the height as needed */
             border-radius: 10px; /* Optional: Add border radius for a rounded appearance */
         }
 
@@ -29,6 +28,13 @@
             font-family: 'Arial', sans-serif;
             font-size: 18px;
             color: #333;
+        }
+
+        @media (max-width: 600px) {
+            #container {
+                max-width: 100vw; /* Adjust the width for smaller screens */
+                padding: 0 20px; /* Adjust padding for better spacing on small screens */
+            }
         }
     </style>
 </head>
@@ -40,6 +46,10 @@
     </div>
 
     <script>
+        // Check if the user has been thanked or spilled
+        const firstEvent = localStorage.getItem('firstEvent');
+        const currentVersion = '3.0';
+
         // Function to set the image state in localStorage
         function setState(imageSrc, caption, event, title, favicon) {
             localStorage.setItem('imageSrc', imageSrc);
@@ -72,9 +82,6 @@
             link.href = imageState.favicon;
         }
 
-        // Check if the user has been thanked or spilled
-        const firstEvent = localStorage.getItem('firstEvent');
-
         // Event listener for visibility change
         document.addEventListener('visibilitychange', function () {
             const firstEvent = localStorage.getItem('firstEvent');
@@ -85,18 +92,29 @@
             }
         });
 
-        // Set timeout for 10 seconds
+        // Set timeout for a few seconds
         setTimeout(function () {
             const firstEvent = localStorage.getItem('firstEvent');
             if (firstEvent == "null" || firstEvent == null) {
                 // If the user hasn't been thanked or spilled, and hasn't left the tab, change the image and caption to "Thank you"
-                setState('images/thanks.png', 'oh my god, thank you sooooo much for watching my milk! i was pretty worried it was gonna spill','thanked', 'ur the goat. seriously','favicons\\thanks.ico');
+                if (getRandomInt(100) <= 50){
+                    setState('images/thanks.png', 'oh my god, thank you sooooo much for watching my milk! i was pretty worried it was gonna spill','thanked', 'ur the goat. seriously','favicons\\thanks.ico');
+                } else {
+                    setState('images/wesmilk.png', 'thanks for watching it','thanked', 'preciate it','favicons\\thanks.ico');
+                }
                 updateImageAndCaption();
             }
-        }, 60000);
+        }, getRandomInt(10000)+15000);
 
-        // If the user has been thanked or spilled, change the image and caption accordingly
-        if (!(firstEvent == "null" || firstEvent == null)) {
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        if (localStorage.getItem('version') != currentVersion){
+            localStorage.clear();
+            localStorage.setItem('version', currentVersion);
+            console.log('cleared!');
+        } else if (!(firstEvent == "null" || firstEvent == null)) {
             updateImageAndCaption();
         }
     </script>
