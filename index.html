@@ -1,12 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicons\glass.ico" />
     <title>Watch my milk plz</title>
     <style>
         body {
@@ -15,7 +10,7 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #f0f0f0; /* Optional: Set a background color */
+            background-color: #ffffff; /* Optional: Set a background color */
             padding: 20px; /* Added padding for better spacing on mobile devices */
         }
 
@@ -46,37 +41,64 @@
 
     <script>
         // Function to set the image state in localStorage
-        function setImageState(imageSrc, caption) {
+        function setState(imageSrc, caption, event, title, favicon) {
             localStorage.setItem('imageSrc', imageSrc);
             localStorage.setItem('caption', caption);
+            localStorage.setItem('firstEvent', event);
+            localStorage.setItem('title', title);
+            localStorage.setItem('favicon', favicon);
         }
 
         // Function to get the image state from localStorage
-        function getImageState() {
+        function getState() {
             return {
-                imageSrc: localStorage.getItem('imageSrc') || 'images/glass.jpg',
-                caption: localStorage.getItem('caption') || 'Yo watch my milk bruh. I\'ll be right back i swear'
+                imageSrc: localStorage.getItem('imageSrc'),
+                caption: localStorage.getItem('caption'),
+                firstEvent: localStorage.getItem('firstEvent'),
+                title: localStorage.getItem('title'),
+                favicon: localStorage.getItem('favicon')
             };
         }
 
         // Function to update the image and caption
         function updateImageAndCaption() {
-            const imageState = getImageState();
+            const imageState = getState();
             document.getElementById('image').src = imageState.imageSrc;
             document.getElementById('caption').innerText = imageState.caption;
+            document.title = imageState.title;
+            var link = document.querySelector("link[rel*='icon']");
+            link.type = 'image/x-icon';
+            link.rel = 'icon';
+            link.href = imageState.favicon;
         }
 
-        // Event listener for page visibility change
+        // Check if the user has been thanked or spilled
+        const firstEvent = localStorage.getItem('firstEvent');
+
+        // Event listener for visibility change
         document.addEventListener('visibilitychange', function () {
-            if (document.visibilityState === 'hidden') {
-                // User has switched to another tab or left the page
-                setImageState('images/spilled.jpg', 'yo wtf it spilled i told you to watch it');
+            const firstEvent = localStorage.getItem('firstEvent');
+            if (document.hidden && (firstEvent == "null" || firstEvent == null)) {
+                // If the user leaves the tab and hasn't been thanked or spilled, change the image and caption to "spilled"
+                setState('images/spilled.jpg', 'yo wtf it spilled i told you to watch it', 'spilled','IT SPILLED! come on','favicons\\spilled.ico');
                 updateImageAndCaption();
             }
         });
 
-        // Set the initial image and caption
-        updateImageAndCaption();
+        // Set timeout for 10 seconds
+        setTimeout(function () {
+            const firstEvent = localStorage.getItem('firstEvent');
+            if (firstEvent == "null" || firstEvent == null) {
+                // If the user hasn't been thanked or spilled, and hasn't left the tab, change the image and caption to "Thank you"
+                setState('images/thanks.png', 'oh my god, thank you sooooo much for watching my milk! i was pretty worried it was gonna spill','thanked', 'ur the goat. seriously','favicons\\thanks.ico');
+                updateImageAndCaption();
+            }
+        }, 10000);
+
+        // If the user has been thanked or spilled, change the image and caption accordingly
+        if (!(firstEvent == "null" || firstEvent == null)) {
+            updateImageAndCaption();
+        }
     </script>
 
 </body>
