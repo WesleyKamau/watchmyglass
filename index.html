@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page with Images</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0; /* Optional: Set a background color */
+            padding: 20px; /* Added padding for better spacing on mobile devices */
+        }
+
+        #container {
+            text-align: center;
+        }
+
+        #image {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px; /* Optional: Add border radius for a rounded appearance */
+        }
+
+        #caption {
+            margin-top: 10px;
+            font-family: 'Arial', sans-serif;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="container">
+        <img id="image" src="images/glass.jpg" alt="Image">
+        <div id="caption">Yo watch my milk bruh. I'll be right back i swear</div>
+    </div>
+
+    <script>
+        // Function to set the image state in localStorage
+        function setImageState(imageSrc, caption) {
+            localStorage.setItem('imageSrc', imageSrc);
+            localStorage.setItem('caption', caption);
+        }
+
+        // Function to get the image state from localStorage
+        function getImageState() {
+            return {
+                imageSrc: localStorage.getItem('imageSrc') || 'images/glass.jpg',
+                caption: localStorage.getItem('caption') || 'Yo watch my milk bruh. I\'ll be right back i swear'
+            };
+        }
+
+        // Function to update the image and caption
+        function updateImageAndCaption() {
+            const imageState = getImageState();
+            document.getElementById('image').src = imageState.imageSrc;
+            document.getElementById('caption').innerText = imageState.caption;
+        }
+
+        // Event listener for page visibility change
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'hidden') {
+                // User has switched to another tab or left the page
+                setImageState('images/spilled.jpg', 'yo wtf it spilled i told you to watch it');
+                updateImageAndCaption();
+            }
+        });
+
+        // Set the initial image and caption
+        updateImageAndCaption();
+    </script>
+
+</body>
+</html>
